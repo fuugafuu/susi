@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>寿司打風タイピングゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🍣 寿司打 タイピング 🍣</h1>
+    <div class="difficulty">
+      難易度:
+      <button id="easy-btn" class="selected">やさしい</button>
+      <button id="normal-btn">ふつう</button>
+      <button id="hard-btn">むずかしい</button>
+    </div>
+    <div class="gamebar">
+      <div>スコア: <span id="score">0</span></div>
+      <div>残り: <span id="timer">30</span>秒</div>
+    </div>
+    <div id="sushi-area"></div>
+    <input id="hidden-input" type="text" autocomplete="off"
+           style="opacity:0;width:1px;height:1px;position:absolute;left:-9999px;top:0;" />
+    <div class="typing-area" id="typing-area" tabindex="0">ここにタイプした文字が表示されます</div>
+    <button id="start-btn">スタート</button>
+    <div id="msg"></div>
+    <div id="warning" class="warning"></div>
+    <div id="ranking"></div>
+  </div>
+  <div style="font-size: 0.9em; color:#999; margin: 16px;">© 2024 寿司打風タイピング（HTML版）</div>
+  <script src="script.js"></script>
+</body>
+</html>
