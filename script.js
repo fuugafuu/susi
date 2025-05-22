@@ -1,4 +1,20 @@
-const SUSHI_WORDS = ["まぐろ","サーモン","えび","たまご","いくら","はまち","こはだ","たい","うに","かっぱ","鉄火","とろ","いか","さば"];
+// カタカナや漢字が表示されても、打つのは「ひらがな」でOK
+const SUSHI_WORDS = [
+  {display: "まぐろ", yomi: "まぐろ"},
+  {display: "サーモン", yomi: "さーもん"},
+  {display: "えび", yomi: "えび"},
+  {display: "たまご", yomi: "たまご"},
+  {display: "いくら", yomi: "いくら"},
+  {display: "はまち", yomi: "はまち"},
+  {display: "こはだ", yomi: "こはだ"},
+  {display: "たい", yomi: "たい"},
+  {display: "うに", yomi: "うに"},
+  {display: "かっぱ", yomi: "かっぱ"},
+  {display: "鉄火", yomi: "てっか"},
+  {display: "とろ", yomi: "とろ"},
+  {display: "いか", yomi: "いか"},
+  {display: "さば", yomi: "さば"}
+];
 const DIFFICULTY = {
   easy: { label: "やさしい", speed: 0.7, addInterval: 2000 },
   normal: { label: "ふつう", speed: 1.1, addInterval: 1300 },
@@ -12,6 +28,12 @@ let interval1, interval2, timerInterval;
 let running = false;
 let sushiId = 0;
 let typingBuffer = "";
+
+// ひらがな変換（カタカナ→ひらがな、漢字そのまま、長音記号そのまま）
+function toHiragana(str) {
+  return str.replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0)-0x60))
+            .replace(/[ー]/g, "ー");
+}
 
 // --- 不正対策 ---
 document.addEventListener('contextmenu', e => e.preventDefault()); // 右クリック禁止
@@ -108,11 +130,14 @@ function finishGame() {
   document.getElementById("start-btn").style.display = "";
 }
 
+// 入力欄でリアルタイム判定
 document.getElementById("hidden-input").addEventListener("input", function(e){
   if (!running) return;
   typingBuffer = e.target.value;
   document.getElementById('typing-area').textContent = typingBuffer;
-  let idx = sushiList.findIndex(s => s.word === typingBuffer);
+  const typedHira = toHiragana(typingBuffer);
+
+  let idx = sushiList.findIndex(s => toHiragana(s.word.yomi) === typedHira);
   if (idx !== -1) {
     score += 10;
     document.getElementById("score").textContent = score;
@@ -121,7 +146,7 @@ document.getElementById("hidden-input").addEventListener("input", function(e){
     typingBuffer = "";
     e.target.value = "";
     document.getElementById('typing-area').textContent = "";
-  } else if (!SUSHI_WORDS.some(w => w.startsWith(typingBuffer))) {
+  } else if (!SUSHI_WORDS.some(w => w.yomi.startsWith(typedHira))) {
     typingBuffer = "";
     e.target.value = "";
     document.getElementById('typing-area').textContent = "";
@@ -137,7 +162,7 @@ function renderSushi() {
   sushiList.forEach(sushi => {
     const div = document.createElement("div");
     div.className = "sushi";
-    div.textContent = sushi.word;
+    div.textContent = sushi.word.display;
     div.style.left = sushi.left + "%";
     area.appendChild(div);
   });
